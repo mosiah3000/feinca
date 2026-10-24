@@ -3,7 +3,7 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer id="contacto" className="bg-gray-900 text-slate-300">
+    <footer id="contacto" className="bg-slate-ink text-slate-300">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
         <div>
           <Logo light />
@@ -33,7 +33,7 @@ export default function Footer() {
           <p className="mt-3 text-sm">Cabimas · Maracaibo · Ciudad Ojeda</p>
         </div>
       </div>
-      <div className="border-t border-white/10 py-5 text-center text-xs text-slate-500">
+      <div className="border-t border-white/10 py-5 text-center text-xs text-slate-400">
         © 2026 FEINCA – Ferretería Eléctrica Industrial, C.A. Todos los derechos reservados.
       </div>
     </footer>

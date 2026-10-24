@@ -24,35 +24,41 @@ export default function SolarSection() {
   }. Consumo aprox.: ${kwhMonth} kWh/mes. Estimado: ${panels} paneles de 630W (${kwp} kWp).`;
 
   return (
-    <section id="solar" className="relative overflow-hidden bg-slate-ink py-20 text-white">
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(245,158,11,0.25),transparent_50%)]"
-      />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-volt/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-volt">
+    <section id="solar" className="overflow-hidden bg-[#e7e8e7] py-14 sm:py-20">
+      <div className="mx-auto grid max-w-7xl items-stretch gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+        <div className="flex flex-col justify-center py-2">
+          <span className="inline-flex items-center gap-2 border-l-[3px] border-feinca pl-3 text-xs font-bold uppercase tracking-[0.12em] text-slate-600">
             <Sun className="h-4 w-4" /> Soluciones de Energía Solar
           </span>
-          <h2 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Panel Solar Bifacial <span className="text-volt">630W</span> de alto rendimiento
+          <h2 className="mt-5 max-w-lg text-3xl font-extrabold tracking-tight text-slate-ink sm:text-4xl">
+            Energía solar para tu hogar o negocio
           </h2>
-          <p className="mt-4 text-slate-300">
-            Capta energía por ambas caras para generar más con menos espacio. Reduce tu factura, protégete de
-            los apagones y haz crecer tu negocio con energía limpia.
+          <p className="mt-4 max-w-xl leading-7 text-slate-600">
+            Paneles, inversores y baterías para sistemas residenciales y comerciales, con asesoría técnica para tu proyecto.
           </p>
-          <ul className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
-            {["Tecnología bifacial", "630W por panel", "Garantía de rendimiento", "Asesoría e instalación"].map((f) => (
-              <li key={f} className="flex items-center gap-2 text-slate-200">
-                <Zap className="h-4 w-4 text-volt" /> {f}
+          <div className="relative mt-7 grid min-h-52.5 grid-cols-[1fr_auto] overflow-hidden bg-slate-ink text-white sm:min-h-60">
+            <div className="relative z-10 flex flex-col justify-between p-5 sm:p-7">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">Energía para avanzar</span>
+              <div>
+                <p className="text-4xl font-extrabold leading-none sm:text-5xl">630<span className="text-feinca">W</span></p>
+                <p className="mt-2 max-w-45 text-sm leading-5 text-white/75">Panel bifacial disponible en el catálogo</p>
+              </div>
+            </div>
+            <div aria-hidden="true" className="absolute bottom-0 right-0 h-2/3 w-[38%] bg-feinca" />
+          </div>
+          <ul className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
+            {["Tecnología bifacial", "Panel de 630 W", "Sistemas residenciales", "Sistemas comerciales"].map((f) => (
+              <li key={f} className="flex items-center gap-2 text-slate-700">
+                <Zap className="h-4 w-4 shrink-0 text-feinca" /> {f}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur sm:p-8">
-          <h3 className="text-xl font-bold">Calculadora solar aproximada</h3>
-          <p className="mt-1 text-sm text-slate-400">Estimación referencial; solicita un estudio personalizado.</p>
+        <div className="border-t-4 border-feinca bg-white p-5 text-slate-ink shadow-[0_18px_50px_-35px_rgba(15,23,42,0.45)] sm:p-8 lg:p-9">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-feinca">Planifica tu proyecto</p>
+          <h3 className="mt-2 text-xl font-bold sm:text-2xl">Calculadora solar aproximada</h3>
+          <p className="mt-1 text-sm text-slate-500">Estimación referencial; solicita un estudio personalizado.</p>
 
           <div role="radiogroup" aria-label="Tipo de cliente" className="mt-6 grid grid-cols-2 gap-3">
             {([
@@ -68,10 +74,10 @@ export default function SolarSection() {
                   setKind(id);
                   setKwhMonth(id === "hogar" ? 300 : 1500);
                 }}
-                className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-semibold transition ${
+                className={`flex min-h-12 items-center justify-center gap-2 rounded-md border px-4 py-3 font-semibold transition-colors ${
                   kind === id
-                    ? "border-volt bg-volt text-slate-ink"
-                    : "border-white/15 bg-white/5 hover:bg-white/10"
+                    ? "border-feinca bg-feinca text-white"
+                    : "border-slate-300 bg-white text-slate-700 hover:border-feinca"
                 }`}
               >
                 <I className="h-5 w-5" /> {label}
@@ -81,7 +87,7 @@ export default function SolarSection() {
 
           <label htmlFor="kwh" className="mt-6 flex justify-between text-sm font-medium">
             <span>Consumo mensual</span>
-            <span className="text-volt">{kwhMonth} kWh</span>
+            <span className="font-semibold text-feinca">{kwhMonth} kWh</span>
           </label>
           <input
             id="kwh"
@@ -91,17 +97,17 @@ export default function SolarSection() {
             step={50}
             value={kwhMonth}
             onChange={(e) => setKwhMonth(Number(e.target.value))}
-            className="mt-2 w-full accent-amber-500"
+            className="mt-2 w-full accent-red-600"
           />
 
-          <div className="mt-6 grid grid-cols-2 gap-4 rounded-xl bg-black/30 p-4 text-center">
+          <div className="mt-6 grid grid-cols-2 gap-4 rounded-md bg-slate-100 p-4 text-center">
             <div>
-              <p className="text-3xl font-extrabold text-volt" aria-live="polite">{panels}</p>
-              <p className="text-xs text-slate-400">paneles de 630W</p>
+              <p className="text-3xl font-extrabold text-feinca" aria-live="polite">{panels}</p>
+              <p className="text-xs text-slate-500">paneles de 630 W</p>
             </div>
             <div>
-              <p className="text-3xl font-extrabold text-volt">{kwp}</p>
-              <p className="text-xs text-slate-400">kWp instalados</p>
+              <p className="text-3xl font-extrabold text-feinca">{kwp}</p>
+              <p className="text-xs text-slate-500">kWp estimados</p>
             </div>
           </div>
 
@@ -109,7 +115,7 @@ export default function SolarSection() {
             href={whatsappLink(WHATSAPP_MAIN, message)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-feinca px-5 py-3.5 font-semibold transition hover:-translate-y-0.5 hover:bg-feinca-dark"
+            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-feinca px-5 py-3.5 font-semibold text-white transition-colors hover:bg-feinca-dark"
           >
             <MessageCircle className="h-5 w-5" /> Solicitar estudio por WhatsApp
           </a>

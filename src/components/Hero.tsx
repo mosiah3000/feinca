@@ -1,65 +1,114 @@
-import { ArrowRight, BadgeCheck, Headset, MessageCircle, Truck, Zap } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, MapPin, MessageCircle } from "lucide-react";
 import { WHATSAPP_MAIN } from "@/data/branches";
 import { whatsappLink } from "@/lib/whatsapp";
 
-const trust = [
-  { icon: BadgeCheck, label: "Material Certificado (UL, NOM)" },
-  { icon: Truck, label: "Envíos en Zulia" },
-  { icon: Headset, label: "Atención Técnica Inmediata" },
+const showcase = [
+  {
+    src: "/images/products/07_lamparas_led_variedad.jpg",
+    alt: "Variedad de lámparas y productos de iluminación LED",
+    label: "Iluminación LED",
+    className: "row-span-2",
+    width: 731,
+    height: 912,
+  },
+  {
+    src: "/images/products/02_tomacorrientes_industriales.jpg",
+    alt: "Interruptores y tomacorrientes industriales",
+    label: "Material eléctrico",
+    className: "",
+    width: 731,
+    height: 1275,
+  },
+  {
+    src: "/images/products/05_juegos_herramientas_mecanicas.jpg",
+    alt: "Juegos de herramientas mecánicas profesionales",
+    label: "Herramientas",
+    className: "",
+    width: 742,
+    height: 909,
+  },
 ];
 
 export default function Hero() {
   return (
-    <section
-      id="inicio"
-      className="relative overflow-hidden bg-slate-ink text-white"
-    >
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(220,38,38,0.35),transparent_55%),radial-gradient(ellipse_at_bottom_left,rgba(245,158,11,0.18),transparent_50%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.06] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]"
-      />
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
-        <span className="inline-flex items-center gap-2 rounded-full border border-volt/40 bg-volt/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-volt">
-          <Zap className="h-3.5 w-3.5" /> Venta al mayor y al detal
-        </span>
-        <h1 className="mt-6 max-w-4xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-          Potencia, Innovación y Seguridad para tus{" "}
-          <span className="bg-gradient-to-r from-red-500 to-volt bg-clip-text text-transparent">
-            Proyectos Eléctricos e Industriales
+    <section id="inicio" className="overflow-hidden bg-[#f2f1ed]">
+      <div className="mx-auto grid max-w-7xl lg:min-h-165 lg:grid-cols-[0.84fr_1.16fr]">
+        <div className="relative z-10 flex flex-col justify-center px-5 py-10 sm:px-8 sm:py-14 lg:px-10 lg:py-16">
+          <span className="inline-flex w-fit items-center gap-2 border-l-[3px] border-feinca pl-3 text-xs font-bold uppercase tracking-[0.14em] text-slate-600">
+            Venta al mayor y al detal
           </span>
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-slate-300">
-          Suministramos a contratistas, electricistas y hogares en todo el Zulia: material eléctrico
-          comercial e industrial, energía solar, iluminación LED y más, con asesoría técnica real.
-        </p>
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <a
-            href="#categorias"
-            className="group inline-flex items-center justify-center gap-2 rounded-lg bg-feinca px-6 py-3.5 font-semibold text-white shadow-lg shadow-red-900/40 transition hover:-translate-y-0.5 hover:bg-feinca-dark"
-          >
-            Ver Catálogo
-            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </a>
-          <a
-            href={whatsappLink(WHATSAPP_MAIN, "Hola FEINCA, quisiera cotizar material para mi proyecto.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/25 bg-white/5 px-6 py-3.5 font-semibold backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
-          >
-            <MessageCircle className="h-5 w-5" /> Cotizar por WhatsApp
-          </a>
+          <h1 className="mt-5 max-w-135 text-[2.55rem] font-extrabold leading-[1.04] text-slate-ink sm:text-5xl lg:text-[3.45rem]">
+            Todo para tus proyectos <span className="text-feinca">eléctricos e industriales.</span>
+          </h1>
+          <p className="mt-5 max-w-122.5 text-base leading-7 text-slate-600 sm:text-lg">
+            Material eléctrico, iluminación LED, energía solar y herramientas para profesionales,
+            empresas y hogares. Encuentra soluciones confiables con atención personalizada.
+          </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="#categorias"
+              className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-sm bg-feinca px-5 font-semibold text-white transition-colors hover:bg-feinca-dark"
+            >
+              Explorar catálogo
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
+            <a
+              href={whatsappLink(WHATSAPP_MAIN, "Hola FEINCA, quisiera cotizar material para mi proyecto.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 items-center justify-center gap-2 border border-slate-300 bg-white/70 px-5 font-semibold text-slate-ink transition-colors hover:border-feinca hover:text-feinca"
+            >
+              <MessageCircle className="h-4 w-4" /> Cotizar por WhatsApp
+            </a>
+          </div>
+          <p className="mt-6 flex items-center gap-2 text-sm font-medium text-slate-500">
+            <MapPin className="h-4 w-4 text-feinca" />
+            Cabimas · Maracaibo · Ciudad Ojeda
+          </p>
         </div>
-        <ul className="mt-12 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-8">
-          {trust.map(({ icon: Icon, label }) => (
-            <li key={label} className="flex items-center gap-2 text-sm font-medium text-slate-200">
-              <Icon className="h-5 w-5 text-volt" /> {label}
-            </li>
+
+        <div className="relative min-h-92.5 overflow-hidden bg-slate-ink sm:min-h-120 lg:min-h-165">
+          <div aria-hidden="true" className="absolute inset-y-0 right-0 w-[38%] bg-feinca" />
+          <div aria-hidden="true" className="absolute bottom-0 left-0 h-[38%] w-[62%] bg-[#d8d9d7]" />
+          <figure className="absolute inset-y-[7%] left-[7%] z-10 w-[54%] overflow-hidden border-[7px] border-white bg-white shadow-2xl sm:border-10">
+            <Image
+              src={showcase[0].src}
+              alt={showcase[0].alt}
+              width={showcase[0].width}
+              height={showcase[0].height}
+              priority
+              loading="eager"
+              sizes="(max-width: 1023px) 54vw, 34vw"
+              className="h-full w-full object-contain"
+            />
+            <figcaption className="absolute inset-x-0 bottom-0 bg-slate-ink px-3 py-2 text-xs font-bold uppercase tracking-wider text-white sm:px-4 sm:py-3 sm:text-sm">
+              {showcase[0].label}
+            </figcaption>
+          </figure>
+          {showcase.slice(1).map((item, index) => (
+            <figure
+              key={item.src}
+              className={`absolute right-[6%] z-20 w-[30%] overflow-hidden border-[5px] border-white bg-white shadow-xl sm:border-[7px] ${index === 0 ? "top-[8%]" : "bottom-[7%]"}`}
+            >
+              <div className="relative aspect-[0.82]">
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 1023px) 30vw, 19vw"
+                  className="object-contain"
+                />
+              </div>
+              <figcaption className="border-t border-slate-200 px-2 py-1.5 text-[10px] font-bold text-slate-700 sm:px-3 sm:py-2 sm:text-xs">
+                {item.label}
+              </figcaption>
+            </figure>
           ))}
-        </ul>
+          <span className="absolute bottom-4 left-4 z-20 text-[10px] font-bold uppercase tracking-[0.2em] text-white/75 sm:bottom-6 sm:left-7">
+            FEINCA · Zulia
+          </span>
+        </div>
       </div>
     </section>
   );
