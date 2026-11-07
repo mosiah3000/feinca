@@ -1,28 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import {
-  ArrowRight,
-  Droplets,
-  Hammer,
-  Lightbulb,
-  MessageCircle,
-  Plug,
-  Sun,
-  type LucideIcon,
-} from "lucide-react";
-import { categories, products, type CategoryId, type Product } from "@/data/products";
+import { ArrowRight, ShoppingCart, Star, X } from "lucide-react";
+import { categories, products, type CategoryId } from "@/data/products";
 import { WHATSAPP_MAIN } from "@/data/branches";
-import { productQuoteLink } from "@/lib/whatsapp";
+import { productQuoteLink, whatsappLink } from "@/lib/whatsapp";
 
-const icons: Record<CategoryId, LucideIcon> = {
-  dispositivos: Plug,
-  solar: Sun,
-  iluminacion: Lightbulb,
-  agua: Droplets,
-  herramientas: Hammer,
-};
+type FilterId = "todos" | CategoryId;
 
 const categoryShowcase: {
   label: string;
@@ -31,176 +16,325 @@ const categoryShowcase: {
   alt: string;
 }[] = [
   {
-    label: "Material eléctrico",
-    category: "dispositivos",
-    image: "/images/products/01_interruptores_tania_dek.jpg",
-    alt: "Productos de material eléctrico",
-  },
-  {
-    label: "Interruptores y tomacorrientes",
-    category: "dispositivos",
-    image: "/images/products/02_tomacorrientes_industriales.jpg",
-    alt: "Interruptores y tomacorrientes",
-  },
-  {
-    label: "Iluminación LED",
-    category: "iluminacion",
-    image: "/images/products/07_lamparas_led_variedad.jpg",
-    alt: "Variedad de lámparas LED",
-  },
-  {
-    label: "Energía solar",
-    category: "solar",
-    image: "/images/products/04_panel_solar_bifacial_630w.jpg",
-    alt: "Panel solar bifacial de 630 W",
-  },
-  {
     label: "Herramientas",
     category: "herramientas",
-    image: "/images/products/05_juegos_herramientas_mecanicas.jpg",
-    alt: "Juegos de herramientas mecánicas",
+    image: "/images/products/01_cortapernos_dyllu_30.jpg",
+    alt: 'Cortapernos profesional Dyllu de 30 pulgadas CR-V',
   },
   {
-    label: "Filtración de agua",
+    label: "Electricidad",
+    category: "proteccion",
+    image: "/images/products/02_protector_voltaje_exceline.jpg",
+    alt: "Protector de voltaje Exceline 18.000 BTU",
+  },
+  {
+    label: "Bombas LEO",
+    category: "bombas",
+    image: "/images/products/03_bombas_agua_leo.jpg",
+    alt: "Bombas de agua y presurizadores LEO",
+  },
+  {
+    label: "Plomería y Agua",
     category: "agua",
-    image: "/images/products/03_filtro_agua_osmosis_inversa.jpg",
-    alt: "Sistema de filtración de agua por ósmosis inversa",
+    image: "/images/products/04_filtro_osmosis_inversa_nurfilter.jpg",
+    alt: "Filtro de agua de ósmosis inversa 6 etapas Nurfilter",
+  },
+  {
+    label: "Bombeo Industrial",
+    category: "bombas",
+    image: "/images/products/05_bombas_industriales_shimge.jpg",
+    alt: "Bombas centrífugas y controlador SHIMGE",
   },
 ];
 
-const productImages: Record<Product["id"], string> = {
-  "tania-wiring": "/images/products/01_interruptores_tania_dek.jpg",
-  "toma-gfci": "/images/products/02_tomacorrientes_industriales.jpg",
-  "linea-dek": "/images/products/01_interruptores_tania_dek.jpg",
-  "linea-esty": "/images/products/01_interruptores_tania_dek.jpg",
-  "panel-630w": "/images/products/04_panel_solar_bifacial_630w.jpg",
-  "sistema-fotovoltaico": "/images/products/04_panel_solar_bifacial_630w.jpg",
-  "vapoleta-ip65": "/images/products/08_vapoleta_led_18w.jpg",
-  "plafon-exxel": "/images/products/07_lamparas_led_variedad.jpg",
-  "plafon-run": "/images/products/07_lamparas_led_variedad.jpg",
-  "plafon-igoto": "/images/products/07_lamparas_led_variedad.jpg",
-  "osmosis-nurfilter": "/images/products/03_filtro_agua_osmosis_inversa.jpg",
-  "set-channellock": "/images/products/05_juegos_herramientas_mecanicas.jpg",
-  "set-dados-stanley": "/images/products/05_juegos_herramientas_mecanicas.jpg",
-  "set-hyper-tough": "/images/products/05_juegos_herramientas_mecanicas.jpg",
-};
-
 export default function Catalog() {
-  const [active, setActive] = useState<CategoryId>("dispositivos");
-  const visible = products.filter((p) => p.category === active);
+  const [active, setActive] = useState<FilterId>("todos");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const onSearch = (e: Event) => {
+      const custom = e as CustomEvent<string>;
+      setSearchQuery(custom.detail ?? "");
+    };
+    window.addEventListener("feinca:search", onSearch);
+    return () => window.removeEventListener("feinca:search", onSearch);
+  }, []);
+
+  const visible = products.filter((p) => {
+    const matchesCategory = active === "todos" || p.category === active;
+    const q = searchQuery.trim().toLowerCase();
+    const matchesQuery =
+      !q ||
+      p.name.toLowerCase().includes(q) ||
+      p.shortName.toLowerCase().includes(q) ||
+      p.brand.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q);
+    return matchesCategory && matchesQuery;
+  });
 
   return (
-    <section id="categorias" className="bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-feinca">Catálogo FEINCA</p>
-            <h2 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight text-slate-ink sm:text-4xl">
-              Soluciones para cada parte de tu proyecto
+    <section id="categorias" className="bg-white py-8 sm:py-12">
+      <div className="mx-auto max-w-7xl space-y-10 px-4 sm:space-y-12 sm:px-6">
+        {/* 1. Categorías principales */}
+        <div>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="border-l-4 border-feinca pl-3 text-lg font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+              <span className="sm:hidden">Categorías</span>
+              <span className="hidden sm:inline">Categorías principales</span>
             </h2>
+            <a
+              href="#productos"
+              onClick={() => {
+                setActive("todos");
+                setSearchQuery("");
+              }}
+              className="inline-flex items-center gap-1 text-xs font-bold text-feinca hover:underline sm:text-sm"
+            >
+              Ver todas <ArrowRight className="h-3.5 w-3.5" />
+            </a>
           </div>
-          <p className="hidden border-l border-slate-300 pb-1 pl-4 text-sm text-slate-500 md:block">
-            Seis categorías, un solo proveedor
-          </p>
+
+          <div className="mt-4 grid grid-cols-3 gap-2.5 sm:mt-5 sm:gap-4 lg:grid-cols-5">
+            {categoryShowcase.map((item) => {
+              const isSelected = active === item.category;
+              return (
+                <a
+                  key={item.label}
+                  href="#productos"
+                  onClick={() => setActive(item.category)}
+                  className={`group flex flex-col items-center rounded-xl border p-2.5 text-center transition-all sm:p-3.5 ${
+                    isSelected
+                      ? "border-feinca bg-red-50/40 shadow-sm"
+                      : "border-slate-200/80 bg-[#f4f4f5] hover:-translate-y-0.5 hover:border-feinca/60 hover:bg-white hover:shadow-sm"
+                  }`}
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-[#141619]">
+                    <Image
+                      src={item.image}
+                      alt={item.alt}
+                      fill
+                      sizes="(max-width: 639px) 30vw, (max-width: 1023px) 30vw, 18vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <span className="mt-2.5 text-xs font-bold text-slate-900 sm:text-sm">
+                    {item.label}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
-          {categoryShowcase.map((item) => (
+        {/* 2. Promociones */}
+        <div id="promociones" className="scroll-mt-28">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="border-l-4 border-feinca pl-3 text-lg font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+              Promociones
+            </h2>
             <a
-              key={item.label}
-              href="#productos"
-              onClick={() => setActive(item.category)}
-              className="group overflow-hidden border border-slate-200 bg-white transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-feinca/60"
+              href={whatsappLink(WHATSAPP_MAIN, "Hola FEINCA, quisiera consultar las promociones disponibles.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs font-bold text-feinca hover:underline sm:text-sm"
             >
-              <div className="relative aspect-[1.18] bg-[#f2f1ed] p-1.5 sm:p-2">
-                <Image
-                  src={item.image}
-                  alt={item.alt}
-                  fill
-                  sizes="(max-width: 639px) 45vw, (max-width: 1023px) 29vw, 16vw"
-                  className="object-contain p-2 transition-transform duration-500 group-hover:scale-[1.04]"
-                />
+              <span className="sm:hidden">Ver más</span>
+              <span className="hidden sm:inline">Ver más promociones</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3.5 sm:mt-5 md:grid-cols-3 md:gap-4">
+            {/* Promo Card 1 - Red */}
+            <a
+              href={productQuoteLink(WHATSAPP_MAIN, 'Cortapernos / Cizalla Profesional de 30" CR-V (Promoción)')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative grid min-h-[150px] grid-cols-[1.15fr_0.85fr] items-center overflow-hidden rounded-2xl bg-gradient-to-r from-[#9e1118] via-[#c41922] to-[#dc2626] p-4 text-white shadow-sm sm:min-h-[168px] sm:p-5"
+            >
+              <div className="relative z-10 pr-2">
+                <p className="text-xs font-semibold text-white/90 sm:text-sm">Hasta</p>
+                <p className="mt-0.5 text-2xl font-black tracking-tight sm:text-3xl">20% OFF</p>
+                <p className="mt-1 text-xs font-semibold leading-4 text-white/95 sm:text-sm">
+                  en herramientas seleccionadas
+                </p>
               </div>
-              <div className="flex min-h-14.5 items-center justify-between gap-1 border-t-[3px] border-t-feinca px-3 py-2 sm:px-3.5">
-                <span className="text-xs font-semibold leading-4 text-slate-700 sm:text-sm">{item.label}</span>
-                <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-feinca transition-transform group-hover:translate-x-1" />
+              <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/15 bg-[#141619] shadow-md sm:h-32">
+                <Image
+                  src="/images/products/01_cortapernos_dyllu_30.jpg"
+                  alt="Promoción en herramientas Dyllu"
+                  fill
+                  sizes="(max-width: 767px) 42vw, 15vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
               </div>
             </a>
-          ))}
+
+            {/* Promo Card 2 - Dark */}
+            <a
+              href={productQuoteLink(WHATSAPP_MAIN, "Promoción en Bombas de Agua LEO y SHIMGE")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative grid min-h-[150px] grid-cols-[1.15fr_0.85fr] items-center overflow-hidden rounded-2xl bg-gradient-to-r from-[#121417] via-[#1c2026] to-[#272c35] p-4 text-white shadow-sm sm:min-h-[168px] sm:p-5"
+            >
+              <div className="relative z-10 pr-2">
+                <p className="text-sm font-bold text-white/90 sm:text-base">Ofertas en</p>
+                <p className="text-xl font-black leading-tight tracking-tight sm:text-2xl">
+                  bombas de agua
+                </p>
+                <p className="mt-1.5 text-xs text-slate-300">
+                  Potencia y caudal para tus proyectos
+                </p>
+              </div>
+              <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/15 bg-[#141619] shadow-md sm:h-32">
+                <Image
+                  src="/images/products/03_bombas_agua_leo.jpg"
+                  alt="Ofertas en bombas de agua LEO"
+                  fill
+                  sizes="(max-width: 767px) 42vw, 15vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+            </a>
+
+            {/* Promo Card 3 - Light */}
+            <a
+              href={productQuoteLink(WHATSAPP_MAIN, "Promoción en Protección Eléctrica y Ósmosis Inversa")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative grid min-h-[150px] grid-cols-[1.15fr_0.85fr] items-center overflow-hidden rounded-2xl border border-slate-200 bg-[#f2f1ed] p-4 text-slate-900 shadow-sm sm:min-h-[168px] sm:p-5"
+            >
+              <div className="relative z-10 pr-2">
+                <p className="text-2xl font-black tracking-tight text-feinca sm:text-3xl">10% OFF</p>
+                <p className="mt-1 text-xs font-bold leading-4 text-slate-800 sm:text-sm">
+                  en protección eléctrica y filtración
+                </p>
+              </div>
+              <div className="relative h-28 w-full overflow-hidden rounded-xl border border-slate-300 bg-[#141619] shadow-md sm:h-32">
+                <Image
+                  src="/images/products/02_protector_voltaje_exceline.jpg"
+                  alt="Descuento en protector de voltaje Exceline"
+                  fill
+                  sizes="(max-width: 767px) 42vw, 15vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+            </a>
+          </div>
         </div>
 
-        <div id="productos" className="mt-12 scroll-mt-24 border-t border-slate-200 pt-8">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Selección de productos</p>
-          <h3 className="mt-2 text-2xl font-bold text-slate-ink">Encuentra lo que buscas</h3>
-        <div
-          role="tablist"
-          aria-label="Categorías de productos"
-          className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:px-0"
-        >
-          {categories.map((c) => {
-            const TabIcon = icons[c.id];
-            const selected = c.id === active;
-            return (
+        {/* 3. Productos destacados */}
+        <div id="productos" className="scroll-mt-28">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="border-l-4 border-feinca pl-3 text-lg font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+              Productos destacados
+            </h2>
+            <button
+              type="button"
+              onClick={() => {
+                setActive("todos");
+                setSearchQuery("");
+              }}
+              className="inline-flex items-center gap-1 text-xs font-bold text-feinca hover:underline sm:text-sm"
+            >
+              Ver todos <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
+          {/* Filter Pills */}
+          <div
+            role="tablist"
+            aria-label="Filtrar productos por categoría"
+            className="-mx-4 mt-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={active === "todos"}
+              onClick={() => setActive("todos")}
+              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-colors sm:text-sm ${
+                active === "todos"
+                  ? "border-feinca bg-feinca text-white"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-feinca hover:text-feinca"
+              }`}
+            >
+              Todos ({products.length})
+            </button>
+            {categories.map((c) => (
               <button
                 key={c.id}
+                type="button"
                 role="tab"
-                id={`tab-${c.id}`}
-                aria-selected={selected}
-                aria-controls="catalog-panel"
+                aria-selected={active === c.id}
                 onClick={() => setActive(c.id)}
-                className={`inline-flex min-h-10 shrink-0 items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold transition-colors ${
-                  selected
-                    ? "border-feinca bg-feinca text-white shadow-md"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-feinca/40 hover:text-feinca"
+                className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-colors sm:text-sm ${
+                  active === c.id
+                    ? "border-feinca bg-feinca text-white"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-feinca hover:text-feinca"
                 }`}
               >
-                <TabIcon className="h-4 w-4" /> {c.label}
+                {c.label}
               </button>
-            );
-          })}
-        </div>
+            ))}
+            {searchQuery.trim() && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200"
+              >
+                Búsqueda: &ldquo;{searchQuery}&rdquo; <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
 
-        <div
-          id="catalog-panel"
-          role="tabpanel"
-          aria-labelledby={`tab-${active}`}
-          className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {visible.map((p) => (
-            <article
-              key={p.id}
-              className="group flex flex-col overflow-hidden border border-slate-200 bg-white transition-colors hover:border-slate-400"
-            >
-              <div className="relative h-56 bg-[#f2f1ed] p-3">
-                <Image
-                  src={productImages[p.id]}
-                  alt={p.name}
-                  fill
-                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                  className="object-contain p-3 transition-transform duration-300 group-hover:scale-[1.02]"
-                />
-                {p.featured && (
-                  <span className="absolute right-3 top-3 rounded-sm bg-feinca px-2.5 py-1 text-xs font-bold text-white">
-                    Destacado
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-1 flex-col p-5">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{p.brand}</p>
-                <h3 className="mt-1 text-lg font-bold text-slate-ink">{p.name}</h3>
-                <p className="mt-2 flex-1 text-sm text-slate-600">{p.description}</p>
+          {/* Products Grid */}
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+            {visible.map((p) => (
+              <article
+                key={p.id}
+                className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-3 shadow-xs transition-all hover:border-slate-300 hover:shadow-md sm:p-3.5"
+              >
+                <div>
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-[#141619]">
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      fill
+                      sizes="(max-width: 639px) 46vw, (max-width: 1023px) 30vw, 18vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+
+                  <p className="mt-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    {p.brand}
+                  </p>
+                  <h3
+                    title={p.name}
+                    className="mt-0.5 line-clamp-2 text-xs font-bold leading-snug text-slate-900 sm:text-sm"
+                  >
+                    {p.shortName}
+                  </h3>
+
+                  {/* Rating & Badges Row */}
+                  <div className="mt-1.5 flex items-center gap-1 text-xs">
+                    <Star className="h-3.5 w-3.5 fill-feinca text-feinca" />
+                    <span className="font-bold text-feinca">{p.rating}</span>
+                    <span className="text-slate-400">({p.reviews})</span>
+                  </div>
+                </div>
+
                 <a
                   href={productQuoteLink(WHATSAPP_MAIN, p.name)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-slate-ink px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-feinca"
+                  className="mt-3.5 inline-flex min-h-9 w-full items-center justify-center gap-1.5 rounded-lg border-2 border-feinca px-3 py-1.5 text-xs font-bold text-feinca transition-colors hover:bg-feinca hover:text-white sm:min-h-10 sm:text-sm"
                 >
-                  <MessageCircle className="h-4 w-4" /> Solicitar cotización
+                  <ShoppingCart className="h-3.5 w-3.5 text-slate-800 group-hover:text-current sm:h-4 sm:w-4" />
+                  Agregar / Cotizar
                 </a>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
